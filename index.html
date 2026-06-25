@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesa da Graça: Painel Devocional & Comunidade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="symbol">✝</span>
+                    <span class="title">Mesa da Graça</span>
+                </div>
+                <button id="sidebar-close-btn" class="icon-btn mobile-only" title="Fechar menu">&times;</button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="devocional" id="nav-devocional">
+                    <span class="nav-icon">📖</span> O Devocional
+                </button>
+                <button class="nav-item" data-tab="mural" id="nav-mural">
+                    <span class="nav-icon">👥</span> Mural Comunitário
+                </button>
+                <button class="nav-item" data-tab="diario" id="nav-diario">
+                    <span class="nav-icon">✍</span> Meu Diário Privado
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <!-- Admin Area -->
+                <div class="admin-status-area" id="admin-area">
+                    <button id="admin-login-btn" class="admin-nav-btn">
+                        <span class="btn-icon">🔑</span> Acesso Admin
+                    </button>
+                    <div id="admin-badge" class="admin-badge hidden">
+                        <span>🔓 Admin Ativo</span>
+                        <div class="admin-badge-actions" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button id="change-pwd-btn" class="logout-link" title="Alterar Senha do Admin" style="font-size: 0.95rem; text-decoration: none;">⚙️</button>
+                            <button id="admin-logout-btn" class="logout-link" title="Sair do modo Admin">(Sair)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button id="ambient-btn" class="icon-btn" title="Som Ambiente">
+                        <span class="icon">🎵</span>
+                    </button>
+                    <button id="theme-btn" class="icon-btn" title="Alternar Tema">
+                        <span class="icon">☀</span>
+                    </button>
+                </div>
+                <div class="footer-meta">Mesa da Graça © 2026</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Mobile Header Top Bar -->
+            <header class="mobile-header">
+                <button id="sidebar-toggle-btn" class="icon-btn" title="Abrir menu">
+                    <span class="icon">☰</span>
+                </button>
+                <div class="logo">
+                    <span class="symbol">✝</span>
+                    <span class="title">Mesa da Graça</span>
+                </div>
+                <div class="mobile-actions">
+                    <button id="mobile-theme-btn" class="icon-btn" title="Alternar Tema">
+                        <span class="icon">☀</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="content-body">
+                
+                <!-- TAB 1: DEVOCIONAL -->
+                <section id="tab-devocional" class="tab-content active">
+                    <!-- Hero Section -->
+                    <div class="hero-section">
+                        <div class="badge">Uma Reflexão Pessoal</div>
+                        <h1>Além do Ritual: A Liberdade e a Mesa</h1>
+                        <p class="hero-subtitle">
+                            Uma meditação sincera sobre o verdadeiro memorial da Cruz, o fardo do legalismo e o que de fato nos santifica.
+                        </p>
+                    </div>
+
+                    <article class="devotional-article">
+                        <section class="devotional-chapter" id="chapter-1">
+                            <h2>1. A Prisão do Ritual</h2>
+                            <div class="content-block">
+                                <p>
+                                    Eu já vivi isso na pele. Sei exatamente o que é ter líderes que não entendem o verdadeiro Evangelho de Cristo. O reflexo disso é devastador: cria-se uma igreja de discípulos fracos e deficientes da Palavra, pessoas que passam a viver uma vida de angústia e prisão espiritual constante.
+                                </p>
+                                <p>
+                                    Quando a liderança ensina a Palavra sob o peso do legalismo, a mesa da Ceia deixa de ser um memorial de ação de graças e comunhão e passa a ser vista como um tribunal ou, pior, como um rito purificador automático — um meio para "limpar" os pecados cometidos na semana. Essa mentira gera uma falsa segurança ou um medo paralisante que rouba a paz que Cristo nos deu.
+                                </p>
+                            </div>
+                            <div class="quote-card">
+                                <blockquote>
+                                    "Muitos acham que a ceia é para limpar pecados, transformando a graça de Deus em um fardo mecânico e religioso."
+                                </blockquote>
+                            </div>
+                        </section>
+
+                        <section class="devotional-chapter" id="chapter-2">
+                            <h2>2. A Carne Milita e a Cruz Limpa</h2>
+                            <div class="content-block">
+                                <p>
+                                    Nós sabemos que a salvação é pela fé. Isso, de forma alguma, significa que vou chutar o balde e ficar fazendo tudo o que bem penso da minha vida. Quem realmente tem um encontro genuíno com Deus percebe que as coisas do mundo já não satisfazem mais os desejos da carne; a presença de Deus se torna aquilo que nos basta.
+                                </p>
+                                <p>
+                                    Ainda assim, a carne milita contra o espírito todo santo dia. E aqui está a realidade humana que muitos tentam esconder sob uma capa de religiosidade: por mais que estejamos em Cristo, nós falhamos. Por exemplo, se olhei para uma irmã por alguns segundos e a desejo, cometi um pecado na minha mente.
+                                </p>
+                                <p>
+                                    Se eu for para a mesa da Ceia achando que aquele pedaço de pão e aquele gole de suco de uva vão me livrar desse pecado e limpar minha ficha, estou completamente examinado. <strong>A Ceia não me livra dos pecados. O que Jesus fez na Cruz é o que me limpa de todos eles.</strong>
+                                </p>
+                            </div>
+
+                            <!-- Interactive Scripture Accordion -->
+                            <div class="scripture-container">
+                                <h3>Fundamentação Bíblica</h3>
+                                <div class="accordion-item">
+                                    <button class="accordion-header">
+                                        <span>Hebreus 10:12-14 — O Sacrifício Único</span>
+                                        <span class="accordion-arrow">+</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <p class="bible-verse">
+                                            "Mas este, havendo oferecido um único sacrifício pelos pecados, assentou-se para sempre à direita de Deus... Porque com uma só oblação aperfeiçoou para sempre os que são santificados."
+                                        </p>
+                                        <p class="reflection">
+                                            <strong>Minha reflexão:</strong> Jesus não precisa nos perdoar repetidamente a cada rito. O sacrifício na cruz foi perfeito, completo e definitivo. A nossa limpeza está consumada n'Ele, não no ritual do pão e do cálice.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header">
+                                        <span>Romanos 7:22-25 — A Luta da Carne</span>
+                                        <span class="accordion-arrow">+</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <p class="bible-verse">
+                                            "Porque, segundo o homem interno, tenho prazer na lei de Deus; mas vejo nos meus membros outra lei, que batalha contra a lei do meu entendimento... Miserável homem que eu sou! Quem me livrará do corpo desta morte? Dou graças a Deus por Jesus Cristo nosso Senhor."
+                                        </p>
+                                        <p class="reflection">
+                                            <strong>Minha reflexão:</strong> Reconhecer a nossa fragilidade humana e a militância da carne não nos afasta da salvação, mas nos empurra de volta para a Graça. A nossa vitória sobre a carne está na gratidão pelo sacrifício de Cristo.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="devotional-chapter" id="chapter-3">
+                            <h2>3. Comunhão Sem Fardos</h2>
+                            <div class="content-block">
+                                <p>
+                                    Nós temos que viver em comunhão mútua todo santo dia. No entanto, essa comunhão não pode ser um fardo pesado. Nós vamos olhar para o mundo, nós vamos pecar — embora isso não deva, de maneira nenhuma, virar uma rotina em nossa caminhada.
+                                </p>
+                                <p>
+                                    A Santa Ceia não foi instituída para nos proibir de fluir em comunhão com os nossos irmãos em Cristo. Ela não deve ser um momento de isolamento culposo, mas de celebração coletiva do corpo unificado. A santidade genuína não brota do medo da mesa ou do rigor de cumprir uma regra externa; <strong>o que me dá santidade é o quanto estou em Cristo.</strong>
+                                </p>
+                            </div>
+                            
+                            <div class="abiding-card">
+                                <div class="card-icon">🍇</div>
+                                <h3>Permanecer para Frutificar</h3>
+                                <p>
+                                    Assim como o ramo não consegue produzir fruto por si mesmo se não permanecer na videira, nós também não conseguimos produzir santidade longe de Jesus. A comunhão com os irmãos flui quando estamos conectados com a Videira Verdadeira.
+                                </p>
+                                <div class="scripture-link" data-verse="john15" id="scripture-link-john">Ler João 15:5</div>
+                            </div>
+                        </section>
+                    </article>
+                </section>
+
+                <!-- TAB 2: MURAL DA COMUNIDADE -->
+                <section id="tab-mural" class="tab-content">
+                    <div class="section-header-mural">
+                        <div>
+                            <span class="section-tag">Espaço Comum</span>
+                            <h1>Mural da Comunidade</h1>
+                            <p class="section-desc">Compartilhe suas reflexões sobre a Graça e interaja com as postagens de outros irmãos.</p>
+                        </div>
+                        <button id="new-post-btn" class="primary-btn">
+                            <span class="btn-icon">✍</span> Criar Reflexão
+                        </button>
+                    </div>
+
+                    <!-- Community Feed Grid -->
+                    <div class="mural-grid" id="mural-grid">
+                        <!-- Loaded dynamically via JavaScript -->
+                    </div>
+                </section>
+
+                <!-- TAB 3: DIÁRIO PRIVADO -->
+                <section id="tab-diario" class="tab-content">
+                    <div class="journal-section-main">
+                        <div class="journal-header-area">
+                            <span class="section-tag">Seu Espaço Privado</span>
+                            <h1>Meu Diário da Graça</h1>
+                            <p class="section-desc">
+                                Um caderno confidencial para suas orações, anotações de estudo e meditações pessoais. Fica salvo apenas no seu navegador.
+                            </p>
+                        </div>
+                        
+                        <div class="journal-editor-card">
+                            <textarea id="journal-input" placeholder="O que Deus tem falado com você sobre liberdade, comunhão e a Cruz hoje?..."></textarea>
+                            <div class="journal-footer">
+                                <span id="save-status">Salvo automaticamente</span>
+                                <button id="clear-btn" class="danger-text-btn">Limpar Todas as Notas</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL 1: CRIAR / EDITAR REFLEXÃO -->
+    <div id="post-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="post-modal-close" class="modal-close" title="Fechar">&times;</button>
+            <h2 id="modal-form-title" class="modal-title">Nova Reflexão</h2>
+            <form id="post-form" class="modal-form">
+                <input type="hidden" id="form-post-id">
+                
+                <div class="form-group">
+                    <label for="form-author">Seu Nome</label>
+                    <input type="text" id="form-author" required placeholder="Ex: Lucas Silva, Irmã Maria...">
+                </div>
+
+                <div class="form-group">
+                    <label for="form-title">Título da Reflexão</label>
+                    <input type="text" id="form-title" required placeholder="Ex: Santidade diária, Livre de Fardos...">
+                </div>
+
+                <div class="form-group">
+                    <label for="form-content">Sua Mensagem</label>
+                    <textarea id="form-content" required placeholder="Escreva o que está no seu coração sobre o Evangelho da Graça..."></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" id="post-modal-cancel" class="sec-btn">Cancelar</button>
+                    <button type="submit" class="primary-btn">Salvar Reflexão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: DETALHES DA POSTAGEM & COMENTÁRIOS -->
+    <div id="details-modal" class="modal-overlay">
+        <div class="modal-content details-modal-content">
+            <button id="details-modal-close" class="modal-close" title="Fechar">&times;</button>
+            
+            <div class="post-details-header">
+                <span class="post-detail-author" id="detail-author">Autor</span>
+                <span class="post-detail-date" id="detail-date">Data</span>
+                <h2 class="modal-title" id="detail-title">Título da Postagem</h2>
+            </div>
+            
+            <div class="post-details-body" id="detail-content">
+                <!-- Content here -->
+            </div>
+
+            <div class="post-details-actions">
+                <button class="action-btn like-btn" id="detail-like-btn">
+                    <span class="icon">❤</span> <span id="detail-like-count">0</span> Curtidas
+                </button>
+            </div>
+
+            <div class="comments-section">
+                <h3>Comentários (<span id="detail-comment-count">0</span>)</h3>
+                
+                <div class="comments-list" id="comments-list">
+                    <!-- Loaded dynamically -->
+                </div>
+
+                <form id="comment-form" class="comment-form">
+                    <div class="comment-input-row">
+                        <input type="text" id="comment-author" required placeholder="Seu nome">
+                        <input type="text" id="comment-text" required placeholder="Escreva um comentário...">
+                        <button type="submit" class="primary-btn-sm">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: LEITURA DE TEXTO BÍBLICO (JOHN 15) -->
+    <div id="scripture-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="scripture-modal-close" class="modal-close" title="Fechar">&times;</button>
+            <div id="scripture-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
