@@ -12,15 +12,16 @@
 // Quando você criar seu projeto no Firebase Console, copie as credenciais da Web App
 // e cole-as no objeto abaixo. Mude "isFirebaseConfigured" para true.
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_AUTH_DOMAIN",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_STORAGE_BUCKET",
-    messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyB7XZfDwjZ4xmwEQ-Y8NrEt3AU3NyU_8tY",
+    authDomain: "mesa-da-graca.firebaseapp.com",
+    projectId: "mesa-da-graca",
+    storageBucket: "mesa-da-graca.firebasestorage.app",
+    messagingSenderId: "4631865068",
+    appId: "1:4631865068:web:1ded63c24ef0a3c184e7c9",
+    measurementId: "G-DBV41MR0RG"
 };
 
-const isFirebaseConfigured = false; // Mude para true depois de colar suas chaves acima
+const isFirebaseConfigured = true; // Mude para true depois de colar suas chaves acima
 
 // ==========================================================================
 // INICIALIZAÇÃO E ABSTRAÇÃO DO BANCO
