@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // Mural da Comunidade (CRUD & Interações via db wrapper)
+    // Mural da Comunidade (CRUD & Interações Reativas via Firebase)
     // ==========================================================================
     const muralGrid = document.getElementById('mural-grid');
     const newPostBtn = document.getElementById('new-post-btn');
@@ -309,10 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let activePostId = null; 
     let posts = [];
 
-    // Mock initial posts
+    // Mock initial posts (Fallback se banco de dados estiver limpo)
     const mockPosts = [
         {
-            id: 'mock-1',
             title: "De Volta para a Graça",
             author: "Manoel Neto",
             content: "Por anos vivi sob o peso de regras e lideranças que transformavam a mesa da ceia num tribunal. Quando entendi que a santidade é permanecer em Cristo (Jo 15), e não cumprir ordens para ser aceito, meu coração achou paz. A ceia hoje é celebração do que Ele fez por mim!",
@@ -322,10 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
             comments: [
                 { id: 'c-1', author: "Esther R.", text: "Que depoimento lindo! Também passei por isso e sei o alívio que é entender a cruz.", date: "24/06/2026", userId: 'usr-mock-1' }
             ],
-            userCreated: false
+            creatorId: 'usr-mock-1'
         },
         {
-            id: 'mock-2',
             title: "O Fardo da Religião",
             author: "Carla Souza",
             content: "Me identifico muito com o texto principal. A ceia como limpador de pecados é um grande engano teológico. Já falhei na minha mente tantas vezes e achei que tomar o pão apagaria isso, mas o sangue d'Ele na cruz é o único agente purificador definitivo. Que libertação!",
@@ -333,10 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
             likes: 12,
             likedByUser: false,
             comments: [],
-            userCreated: false
+            creatorId: 'usr-mock-2'
         },
         {
-            id: 'mock-3',
             title: "A Santidade é Fruto",
             author: "Pastor André",
             content: "Excelente reflexão. Como líderes, precisamos parar de sobrecarregar as ovelhas com legalismos vazios. Santidade é fruto de relacionamento íntimo com Cristo. A mesa é lugar de comunhão e gratidão, não de culpa.",
@@ -344,19 +341,11 @@ document.addEventListener('DOMContentLoaded', () => {
             likes: 15,
             likedByUser: false,
             comments: [
-                { id: 'c-2', author: "Carlos", text: "Amém pastor, que tenhamos mais ensinos focados na videira verdadeira.", date: "23/06/2026", userId: 'usr-mock-2' }
+                { id: 'c-2', author: "Carlos", text: "Amém pastor, que tenhamos mais ensinos focados na videira verdadeira.", date: "23/06/2026", userId: 'usr-mock-3' }
             ],
-            userCreated: false
+            creatorId: 'usr-mock-3'
         }
     ];
-
-    function loadPosts() {
-        posts = db.getPosts(mockPosts);
-    }
-
-    function savePosts() {
-        db.savePosts(posts);
-    }
 
     function renderMural() {
         if (!muralGrid) return;
@@ -367,20 +356,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const likedPostsLocal = db.getLikedPosts();
+
         posts.forEach(post => {
             const card = document.createElement('div');
-            const ownershipClass = post.userCreated ? 'user-owned' : (isAdminActive ? 'admin-view' : '');
+            
+            // Checks if current user created this post (locally or using userId)
+            const isUserPost = post.creatorId === currentUserId || post.userCreated;
+            
+            const ownershipClass = isUserPost ? 'user-owned' : (isAdminActive ? 'admin-view' : '');
             card.className = `post-card ${ownershipClass}`;
             card.setAttribute('data-id', post.id);
 
-            const hasLiked = post.likedByUser ? 'liked' : '';
-            const commentsCount = post.comments.length;
+            const hasLiked = likedPostsLocal.includes(post.id) ? 'liked' : '';
+            const commentsCount = post.comments ? post.comments.length : 0;
             
-            const canManage = post.userCreated || isAdminActive;
+            const canManage = isUserPost || isAdminActive;
 
             card.innerHTML = `
                 <div class="post-header">
-                    <span class="post-author">✍ ${post.author} ${post.userCreated ? '(Você)' : (isAdminActive && !post.userCreated ? '(Moderação)' : '')}</span>
+                    <span class="post-author">✍ ${post.author} ${isUserPost ? '(Você)' : (isAdminActive && !isUserPost ? '(Moderação)' : '')}</span>
                     <span class="post-date">${post.date}</span>
                 </div>
                 <h3 class="post-title">${post.title}</h3>
@@ -462,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Form Submit (Create or Edit)
     if (postForm) {
-        postForm.addEventListener('submit', (e) => {
+        postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = formPostId.value;
             const author = formAuthor.value.trim();
@@ -473,41 +468,43 @@ document.addEventListener('DOMContentLoaded', () => {
             // Save default name in db
             db.setDefaultAuthor(author);
 
-            if (id) {
-                // Edit
-                const index = posts.findIndex(p => p.id === id);
-                if (index !== -1 && (posts[index].userCreated || isAdminActive)) {
-                    posts[index].title = title;
-                    posts[index].author = author;
-                    posts[index].content = content;
-                    posts[index].date = today;
+            try {
+                if (id) {
+                    // Edit
+                    const post = posts.find(p => p.id === id);
+                    if (post && (post.creatorId === currentUserId || isAdminActive)) {
+                        await db.updatePost(id, {
+                            title: title,
+                            author: author,
+                            content: content,
+                            date: today
+                        });
+                    }
+                } else {
+                    // Create
+                    const newPost = {
+                        title: title,
+                        author: author,
+                        content: content,
+                        date: today,
+                        likes: 0,
+                        comments: [],
+                        creatorId: currentUserId // Mark author
+                    };
+                    await db.addPost(newPost);
                 }
-            } else {
-                // Create
-                const newPost = {
-                    id: 'post-' + Date.now(),
-                    title: title,
-                    author: author,
-                    content: content,
-                    date: today,
-                    likes: 0,
-                    likedByUser: false,
-                    comments: [],
-                    userCreated: true
-                };
-                posts.unshift(newPost);
+                closePostModal();
+            } catch (err) {
+                console.error("Erro ao salvar postagem no banco:", err);
+                alert("Ocorreu um erro ao salvar no banco de dados. Tente novamente.");
             }
-
-            savePosts();
-            renderMural();
-            closePostModal();
         });
     }
 
     // Edit Post
     function openEditPost(id) {
         const post = posts.find(p => p.id === id);
-        if (!post || (!post.userCreated && !isAdminActive)) return;
+        if (!post || (post.creatorId !== currentUserId && !isAdminActive)) return;
 
         modalFormTitle.textContent = "Editar Reflexão";
         formPostId.value = post.id;
@@ -518,36 +515,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Delete Post
-    function deletePost(id) {
+    async function deletePost(id) {
         if (confirm("Deseja realmente excluir esta reflexão do Mural?")) {
-            posts = posts.filter(p => p.id !== id);
-            savePosts();
-            renderMural();
-            
-            if (activePostId === id) {
-                closeDetailsModal();
+            try {
+                await db.deletePost(id);
+                if (activePostId === id) {
+                    closeDetailsModal();
+                }
+            } catch (err) {
+                console.error("Erro ao excluir postagem:", err);
+                alert("Erro ao excluir postagem do banco em nuvem.");
             }
         }
     }
 
-    // Toggle Like
-    function toggleLike(id) {
-        const post = posts.find(p => p.id === id);
-        if (!post) return;
-
-        if (post.likedByUser) {
-            post.likes = Math.max(0, post.likes - 1);
-            post.likedByUser = false;
-        } else {
-            post.likes += 1;
-            post.likedByUser = true;
-        }
-
-        savePosts();
-        renderMural();
-        
-        if (activePostId === id) {
-            updateDetailsModalLikes(post);
+    // Toggle Like (Cloud-synced, single like restriction local)
+    async function toggleLike(id) {
+        try {
+            await db.likePost(id);
+            // Local representation will be handled reactive from database snapshot trigger
+        } catch (err) {
+            console.error("Erro ao computar curtida:", err);
         }
     }
 
@@ -570,9 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateDetailsModalLikes(post) {
         detailLikeCount.textContent = post.likes;
-        detailCommentCount.textContent = post.comments.length;
+        detailCommentCount.textContent = post.comments ? post.comments.length : 0;
         
-        if (post.likedByUser) {
+        const likedPostsLocal = db.getLikedPosts();
+        if (likedPostsLocal.includes(post.id)) {
             detailLikeBtn.classList.add('liked');
         } else {
             detailLikeBtn.classList.remove('liked');
@@ -583,12 +572,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!commentsList) return;
         commentsList.innerHTML = '';
 
-        if (post.comments.length === 0) {
+        const comments = post.comments || [];
+
+        if (comments.length === 0) {
             commentsList.innerHTML = `<div class="no-comments" style="color: var(--text-muted); font-size: 0.9rem;">Nenhum comentário. Compartilhe sua opinião abaixo!</div>`;
             return;
         }
 
-        post.comments.forEach(comment => {
+        comments.forEach(comment => {
             const el = document.createElement('div');
             el.className = 'comment-item';
             el.setAttribute('data-comment-id', comment.id);
@@ -630,16 +621,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Delete comment logic
-    function deleteComment(postId, commentId) {
+    async function deleteComment(postId, commentId) {
         if (confirm("Deseja realmente excluir este comentário?")) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
 
-            post.comments = post.comments.filter(c => c.id !== commentId);
-            savePosts();
-            renderComments(post);
-            renderMural(); 
-            updateDetailsModalLikes(post);
+            const comments = (post.comments || []).filter(c => c.id !== commentId);
+            try {
+                await db.saveComments(postId, comments);
+            } catch (err) {
+                console.error("Erro ao excluir comentário:", err);
+            }
         }
     }
 
@@ -648,7 +640,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const post = posts.find(p => p.id === postId);
         if (!post) return;
 
-        const comment = post.comments.find(c => c.id === commentId);
+        const comments = post.comments || [];
+        const comment = comments.find(c => c.id === commentId);
         if (!comment || comment.userId !== currentUserId) return;
 
         const textDiv = document.getElementById(`text-${commentId}`);
@@ -672,12 +665,15 @@ document.addEventListener('DOMContentLoaded', () => {
             renderComments(post);
         });
 
-        form.querySelector('.save').addEventListener('click', () => {
+        form.querySelector('.save').addEventListener('click', async () => {
             const newText = input.value.trim();
             if (newText) {
                 comment.text = newText;
-                savePosts();
-                renderComments(post);
+                try {
+                    await db.saveComments(postId, comments);
+                } catch (err) {
+                    console.error("Erro ao salvar comentário editado:", err);
+                }
             }
         });
 
@@ -702,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Comment submission
     if (commentForm) {
-        commentForm.addEventListener('submit', (e) => {
+        commentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!activePostId) return;
 
@@ -715,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const post = posts.find(p => p.id === activePostId);
             if (post) {
+                const comments = post.comments || [];
                 const newComment = {
                     id: 'comment-' + Date.now(),
                     author: author,
@@ -723,13 +720,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     userId: currentUserId 
                 };
                 
-                post.comments.push(newComment);
-                savePosts();
-                renderComments(post);
-                renderMural(); 
-                
-                detailCommentCount.textContent = post.comments.length;
-                commentTextInput.value = '';
+                comments.push(newComment);
+                try {
+                    await db.saveComments(activePostId, comments);
+                    commentTextInput.value = '';
+                } catch (err) {
+                    console.error("Erro ao enviar comentário:", err);
+                }
             }
         });
     }
@@ -763,9 +760,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialize Mural
-    loadPosts();
-    renderMural();
+    // ==========================================================================
+    // INICIALIZAÇÃO E SINCRONIZAÇÃO EM TEMPO REAL (REALTIME SNAPSHOT)
+    // ==========================================================================
+    // Substitui a carga manual por um listener reativo do Firestore/LocalStorage.
+    // Sempre que algo mudar no banco, o callback roda e atualiza a interface.
+    db.subscribePosts((updatedPosts) => {
+        posts = updatedPosts;
+        renderMural();
+        
+        // Se a tela de detalhes estiver aberta, atualiza na hora com os novos comentários/likes
+        if (activePostId) {
+            const activePost = posts.find(p => p.id === activePostId);
+            if (activePost) {
+                updateDetailsModalLikes(activePost);
+                renderComments(activePost);
+            } else {
+                closeDetailsModal(); // post foi deletado por outro usuário
+            }
+        }
+    }, mockPosts);
+
     loadSavedCommenterName();
 
     // ==========================================================================
